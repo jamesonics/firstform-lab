@@ -1,0 +1,79 @@
+/* A vertical, expandable domain → topic → lesson map. The SVG follows card geometry. */
+.firstform-lab .ff-knowledge { margin-top:48px; scroll-margin-top:24px; }
+.firstform-lab .ff-knowledge:focus { outline:none; }
+.firstform-lab .ff-knowledge-heading { display:flex; justify-content:space-between; align-items:center; gap:22px; margin-bottom:34px; padding-bottom:22px; border-bottom:1px solid var(--ff-line); }
+.firstform-lab .ff-knowledge-heading h2 { font-size:23px; font-weight:600; letter-spacing:-.4px; }
+.firstform-lab .ff-knowledge-heading p { font-size:13px; color:var(--ff-muted); margin-top:7px; line-height:1.8; }
+.firstform-lab .ff-tree-expand-all { display:inline-flex; align-items:center; justify-content:center; gap:7px; flex-shrink:0; min-height:42px; padding:10px 16px; background:var(--ff-tint); color:var(--ff-link); border:0; border-radius:100px; font-size:12px; }
+.firstform-lab .ff-tree-expand-all:hover { background:light-dark(#e1ebfc,#304565); }
+.firstform-lab .ff-tree-map { position:relative; isolation:isolate; --tree-connector:light-dark(#c5d4e9,#536986); --tree-edge-active:light-dark(#91b5eb,#7b9fd4); }
+.firstform-lab .ff-tree-lines { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; z-index:-1; }
+.firstform-lab .ff-tree-lines path { fill:none; stroke:var(--tree-connector); stroke-width:1.5; vector-effect:non-scaling-stroke; }
+.firstform-lab .ff-tree-lines .ff-tree-trunk { stroke:var(--ff-line); stroke-width:2; }
+.firstform-lab .ff-tree-lines .ff-tree-edge[data-open=true],.firstform-lab .ff-tree-lines .ff-tree-twig[data-ready=true] { stroke:var(--tree-edge-active); }
+.firstform-lab .ff-tree-joint-halo { fill:var(--ff-bg); }
+.firstform-lab .ff-tree-joint { fill:var(--ff-bg); stroke:var(--tree-connector); stroke-width:1.5; }
+.firstform-lab .ff-tree-lines [data-open=true] .ff-tree-joint { fill:var(--ff-accent); stroke:var(--ff-accent); }
+.firstform-lab .ff-tree-root { display:grid; gap:4px; width:fit-content; max-width:100%; min-width:220px; padding:18px 32px; margin:0 auto 36px; border:1px solid var(--ff-line); border-radius:16px; background:var(--ff-surface); text-align:center; }
+.firstform-lab .ff-tree-root>span { font-size:11px; color:var(--ff-muted); letter-spacing:1px; }
+.firstform-lab .ff-tree-root strong { font-size:20px; font-weight:600; letter-spacing:-.4px; }
+.firstform-lab .ff-tree-root small { color:var(--ff-muted); font-size:11px; margin-top:3px; }
+.firstform-lab .ff-tree-branches,.firstform-lab .ff-tree-leaves { list-style:none; padding:0; margin:0; }
+.firstform-lab .ff-tree-branches { display:grid; gap:32px; }
+.firstform-lab .ff-tree-row { display:grid; grid-template-columns:minmax(0,1fr) 104px minmax(0,1fr); align-items:start; min-width:0; }
+.firstform-lab .ff-tree-branch-heading { grid-column:1; margin:0; min-width:0; }
+.firstform-lab .ff-tree-branch-card { display:flex; flex-direction:column; align-items:stretch; width:100%; min-height:176px; padding:23px 25px 19px; text-align:left; border:1px solid var(--ff-line); border-radius:18px; background:var(--ff-surface); color:var(--ff-text); transition:background 180ms ease,border-color 180ms ease; }
+.firstform-lab .ff-tree-branch-card[aria-expanded=true] { background:light-dark(#f0f5fd,#222f43); border-color:light-dark(#c7d9f5,#425a7f); }
+.firstform-lab .ff-tree-branch-card:hover { border-color:var(--tree-edge-active); }
+.firstform-lab .ff-tree-node-type { font-size:11px; color:var(--ff-link); font-weight:400; }
+.firstform-lab .ff-tree-branch-card strong { font-size:21px; line-height:1.5; font-weight:600; margin-top:7px; letter-spacing:-.4px; }
+.firstform-lab .ff-tree-branch-description { color:var(--ff-muted); font-size:13px; font-weight:400; line-height:1.8; margin-top:7px; }
+.firstform-lab .ff-tree-branch-foot { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:21px; font-size:11px; color:var(--ff-muted); font-weight:400; }
+.firstform-lab .ff-tree-node-toggle { display:grid; place-items:center; width:26px; height:26px; border-radius:50%; color:var(--ff-link); background:var(--ff-bg); }
+.firstform-lab .ff-tree-branch-card[aria-expanded=true] .ff-tree-node-toggle { background:var(--ff-surface); }
+.firstform-lab .ff-tree-leaves { display:grid; gap:16px; grid-column:3; min-width:0; }
+.firstform-lab .ff-tree-leaf-card { display:block; min-width:0; padding:18px 21px; border:1px solid var(--ff-line); border-radius:14px; background:var(--ff-surface); }
+.firstform-lab .ff-tree-leaf-card[data-ready=true] { border-color:light-dark(#b8ceef,#526e96); }
+.firstform-lab .ff-tree-leaf-card[data-ready=true]:hover { background:var(--ff-tint); border-color:var(--tree-edge-active); }
+.firstform-lab .ff-tree-leaf-status { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:11px; color:var(--ff-muted); }
+.firstform-lab .ff-tree-leaf-card[data-ready=true] .ff-tree-leaf-status { color:var(--ff-link); }
+.firstform-lab .ff-tree-leaf-card h4 { margin:9px 0 6px; font-size:15px; font-weight:500; line-height:1.6; color:var(--ff-text); }
+.firstform-lab .ff-tree-leaf-card p { margin:0; font-size:12px; color:var(--ff-muted); line-height:1.8; }
+.firstform-lab .ff-tree-folded { grid-column:3; align-self:center; font-size:12px; color:var(--ff-muted); }
+.firstform-lab .ff-tree-legend { display:flex; flex-wrap:wrap; justify-content:center; gap:12px 25px; margin-top:34px; padding-top:24px; border-top:1px solid var(--ff-line); font-size:11px; color:var(--ff-muted); }
+.firstform-lab .ff-tree-legend>span { display:flex; align-items:center; gap:7px; }
+.firstform-lab .ff-tree-legend i { width:7px; height:7px; border-radius:50%; border:1px solid var(--tree-connector,var(--ff-muted)); }
+.firstform-lab .ff-tree-legend i[data-ready=true] { background:var(--ff-accent); border-color:var(--ff-accent); }
+@media(max-width:900px) and (min-width:761px) {
+  .firstform-lab .ff-tree-row { grid-template-columns:minmax(0,1fr) 80px minmax(0,1fr); }
+  .firstform-lab .ff-tree-branch-card { padding:20px; }
+  .firstform-lab .ff-tree-leaf-card { padding:17px; }
+  .firstform-lab .ff-tree-branch-card strong { font-size:19px; }
+}
+@media(max-width:760px) {
+  .firstform-lab .ff-knowledge-heading { gap:14px; align-items:flex-start; margin-bottom:26px; }
+  .firstform-lab .ff-knowledge-heading h2 { font-size:21px; }
+  .firstform-lab .ff-knowledge-heading p { max-width:330px; }
+  .firstform-lab .ff-tree-expand-all { padding:9px 13px; min-height:40px; }
+  .firstform-lab .ff-tree-root { width:calc(100% - 36px); max-width:none; min-width:0; margin:0 0 28px 36px; padding:16px 20px; text-align:left; }
+  .firstform-lab .ff-tree-root strong { font-size:19px; }
+  .firstform-lab .ff-tree-branches { gap:26px; }
+  .firstform-lab .ff-tree-row { grid-template-columns:36px minmax(0,1fr); row-gap:18px; }
+  .firstform-lab .ff-tree-branch-heading { grid-column:2; }
+  .firstform-lab .ff-tree-branch-card { min-height:0; padding:19px 20px 16px; border-radius:15px; }
+  .firstform-lab .ff-tree-branch-card strong { font-size:19px; }
+  .firstform-lab .ff-tree-branch-foot { margin-top:15px; }
+  .firstform-lab .ff-tree-leaves { grid-column:2; margin-left:24px; gap:14px; }
+  .firstform-lab .ff-tree-leaf-card { padding:15px 17px; border-radius:12px; }
+  .firstform-lab .ff-tree-folded { display:none; }
+  .firstform-lab .ff-tree-legend { justify-content:flex-start; }
+}
+@media(max-width:420px) {
+  .firstform-lab .ff-knowledge-heading { flex-wrap:wrap; }
+  .firstform-lab .ff-knowledge-heading p { font-size:12px; }
+  .firstform-lab .ff-tree-branch-card { padding:17px; }
+  .firstform-lab .ff-tree-branch-card strong { font-size:18px; }
+  .firstform-lab .ff-tree-leaf-card { padding:14px; }
+  .firstform-lab .ff-tree-leaf-card h4 { font-size:14px; }
+  .firstform-lab .ff-tree-legend { gap:10px 20px; }
+}

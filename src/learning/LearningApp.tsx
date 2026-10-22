@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ComponentType } from 'react'
-import { ArrowDown, ArrowRight, ArrowUpRight, ChevronRight, Moon, Sun } from 'lucide-react'
+import { ArrowDown, ArrowRight, ArrowUpRight, Moon, Sun } from 'lucide-react'
 import { BRAND_NAME, BRAND_ENGLISH_NAME, BRAND_FULL_NAME, BRAND_TAGLINE } from '@/lib/branding'
 import { applyAppearance } from '@/lib/appearance'
 import { BrandMark } from '@/components/brand'
@@ -8,6 +8,7 @@ import { canonicalLearningPath, readLearningRoute } from './routing'
 import { DomainArt } from './DomainArt'
 import { LearningLink, type Navigate } from './Link'
 import ComfortablePage from './ComfortablePage'
+import KnowledgeTree from './KnowledgeTree'
 import './learning.css'
 import './tutorial.css'
 
@@ -33,7 +34,7 @@ function Home({ navigate }: { navigate: Navigate }) {
   </>
 }
 
-function KnowledgeTree({ domain, expanded, toggleBranch, navigate }: { domain: LearningDomain; expanded: string[]; toggleBranch: (id: string) => void; navigate: Navigate }) {
+function DomainPage({ domain, expanded, onExpandedChange, navigate }: { domain: LearningDomain; expanded: string[]; onExpandedChange: (ids: string[]) => void; navigate: Navigate }) {
   const publishedNodes = domain.branches.flatMap(branch => branch.nodes).filter(node => node.articleId)
   const firstArticle = publishedNodes[0]?.articleId ? findArticle(domain.id, publishedNodes[0].articleId) : undefined
   return <>
@@ -52,24 +53,7 @@ function KnowledgeTree({ domain, expanded, toggleBranch, navigate }: { domain: L
       </div>
       <div className="ff-start-outcomes"><p className="ff-kicker">通过讲解和实验，学会</p><ol>{firstArticle.outcomes.map((outcome, index) => <li key={outcome}><span aria-hidden="true">0{index + 1}</span>{outcome}</li>)}</ol></div>
     </section>}
-    <section className="ff-knowledge" id="knowledge-tree" tabIndex={-1} aria-labelledby="knowledge-tree-title">
-      <header className="ff-knowledge-heading"><div><h2 id="knowledge-tree-title">完整知识树</h2><p>{firstArticle ? '想找某个主题？在这里按分类浏览。' : '这里是这一领域的学习规划，教程会随实践逐步补充。'}</p></div><span>{domain.branches.length} 个主题分类</span></header>
-      <div className="ff-tree-list">
-        {domain.branches.map(branch => {
-          const open = expanded.includes(branch.id)
-          const id = 'learning-branch-' + domain.id + '-' + branch.id
-          const ready = branch.nodes.filter(node => node.articleId).length
-          return <section className="ff-branch" data-open={open} key={branch.id}>
-            <h3><button type="button" className="ff-branch-toggle" aria-expanded={open} aria-controls={id} onClick={() => toggleBranch(branch.id)}><span><strong>{branch.title}</strong><small>{branch.description}</small></span><span className="ff-branch-status"><span>{ready ? `${ready} 篇可读` : `${branch.nodes.length} 篇规划`}</span><ChevronRight className="ff-chevron" size={17} aria-hidden="true" /></span></button></h3>
-            <div className="ff-branch-body" id={id} inert={!open} aria-hidden={!open}><div className="ff-branch-inner"><div className="ff-leaves">
-              {branch.nodes.map(node => node.articleId
-                ? <LearningLink className="ff-leaf" data-ready="true" href={articleHref(domain.id, node.articleId)} navigate={navigate} key={node.id}><span>{node.title}</span><small>阅读 <ArrowRight size={12} aria-hidden="true" /></small></LearningLink>
-                : <div className="ff-leaf" data-ready="false" key={node.id}><span>{node.title}</span><small>规划中</small></div>)}
-            </div></div></div>
-          </section>
-        })}
-      </div><p className="ff-planning">标为“规划中”的主题尚未发布。每完成一次学习与验证，这棵树就生长一点。</p>
-    </section>
+    <KnowledgeTree domain={domain} expanded={expanded} onExpandedChange={onExpandedChange} navigate={navigate} />
   </>
 }
 
@@ -150,7 +134,7 @@ export default function LearningApp() {
     pathRef.current = next; locationRef.current = nextLocation
     setPath(next); setNavigationId(value => value + 1); setHasNavigated(true)
   }
-  const toggleBranch = (domainId: DomainId, branchId: string) => setExpanded(previous => ({ ...previous, [domainId]: previous[domainId].includes(branchId) ? previous[domainId].filter(id => id !== branchId) : [...previous[domainId], branchId] }))
+  const changeExpandedBranches = (domainId: DomainId, ids: string[]) => setExpanded(previous => ({ ...previous, [domainId]: ids }))
 
   return <div className="firstform-lab">
     <LearningLink className="ff-skip-link" href={path + '#learning-main'} navigate={navigate} onClick={() => main.current?.focus()}>跳转至主要内容</LearningLink>
@@ -165,7 +149,7 @@ export default function LearningApp() {
       <main ref={main} tabIndex={-1} id="learning-main" className="ff-main">
         <div className={'ff-view' + (hasNavigated ? ' ff-transition' : '')} key={path}>
           {route.kind === 'home' || route.kind === 'legacy' ? <Home navigate={navigate} /> : route.kind === 'domain'
-            ? <KnowledgeTree domain={findDomain(route.domainId)!} expanded={expanded[route.domainId]} toggleBranch={id => toggleBranch(route.domainId, id)} navigate={navigate} />
+            ? <DomainPage domain={findDomain(route.domainId)!} expanded={expanded[route.domainId]} onExpandedChange={ids => changeExpandedBranches(route.domainId, ids)} navigate={navigate} />
             : route.kind === 'article' && ArticleView ? <ArticleView navigate={navigate} />
               : <section className="ff-not-found"><p className="ff-kicker">404</p><h1 className="ff-title">未找到这个页面</h1><p className="ff-description">可以回到学习领域，沿着知识树继续探索。</p><LearningLink href="/" navigate={navigate} className="ff-primary">回到学习领域 <ArrowRight size={15} aria-hidden="true" /></LearningLink></section>}
         </div>

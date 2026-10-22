@@ -10,7 +10,6 @@
 .firstform-lab .ff-theme-button:hover { color:var(--ff-text); background:var(--ff-tint); }
 .firstform-lab .ff-breadcrumb a { display:inline-flex; align-items:center; min-height:32px; padding:3px 0; color:var(--ff-muted); }
 .firstform-lab .ff-breadcrumb a:hover { color:var(--ff-link); }
-.firstform-lab .ff-leaf small { display:inline-flex; align-items:center; gap:5px; }
 .firstform-lab .ff-not-found { padding:70px 0; min-height:55vh; }
 .firstform-lab .ff-not-found .ff-title { margin-top:12px; }
 .firstform-lab .ff-not-found .ff-description { margin:18px 0 24px; }
@@ -114,28 +113,6 @@
 .firstform-lab .ff-start-outcomes ol { list-style:none; margin:20px 0 0; padding:0; }
 .firstform-lab .ff-start-outcomes li { display:flex; align-items:center; gap:15px; margin:19px 0; font-size:14px; }
 .firstform-lab .ff-start-outcomes li>span { color:var(--ff-muted); font-size:11px; font-variant-numeric:tabular-nums; }
-.firstform-lab .ff-knowledge { margin-top:48px; scroll-margin-top:24px; }
-.firstform-lab .ff-knowledge-heading { display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-bottom:22px; }
-.firstform-lab .ff-knowledge-heading h2 { font-size:21px; font-weight:600; letter-spacing:-.4px; }
-.firstform-lab .ff-knowledge-heading p { font-size:13px; color:var(--ff-muted); margin-top:5px; }
-.firstform-lab .ff-knowledge-heading>span { color:var(--ff-muted); font-size:12px; flex-shrink:0; }
-.firstform-lab .ff-tree-list { border-top:1px solid var(--ff-line); }
-.firstform-lab .ff-branch { border-bottom:1px solid var(--ff-line); }
-.firstform-lab .ff-branch-toggle { width:100%; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:20px 0; border:0; text-align:left; background:transparent; color:var(--ff-text); }
-.firstform-lab .ff-branch-toggle strong { display:block; font-size:16px; font-weight:500; }
-.firstform-lab .ff-branch-toggle small { display:block; margin-top:4px; font-size:12px; color:var(--ff-muted); font-weight:400; }
-.firstform-lab .ff-branch-status { display:flex; align-items:center; gap:14px; font-size:11px; font-weight:400; color:var(--ff-muted); flex-shrink:0; }
-.firstform-lab .ff-chevron { transition:transform 200ms ease; }
-.firstform-lab .ff-branch[data-open=true] .ff-chevron { transform:rotate(90deg); }
-.firstform-lab .ff-branch-body { display:grid; grid-template-rows:0fr; transition:grid-template-rows 250ms ease; }
-.firstform-lab .ff-branch[data-open=true] .ff-branch-body { grid-template-rows:1fr; }
-.firstform-lab .ff-branch-inner { overflow:hidden; min-height:0; }
-.firstform-lab .ff-leaves { display:grid; gap:3px; padding:0 0 18px 22px; }
-.firstform-lab .ff-leaf { display:flex; align-items:center; justify-content:space-between; gap:14px; border-radius:10px; padding:12px 16px; color:var(--ff-muted); font-size:13px; }
-.firstform-lab .ff-leaf small { display:inline-flex; align-items:center; gap:5px; flex-shrink:0; font-size:11px; color:var(--ff-muted); }
-.firstform-lab .ff-leaf[data-ready=true] { background:var(--ff-surface); color:var(--ff-text); }
-.firstform-lab .ff-leaf[data-ready=true]:hover { background:var(--ff-tint); }
-.firstform-lab .ff-leaf[data-ready=true] small { color:var(--ff-link); }
 .firstform-lab .ff-planning { color:var(--ff-muted); font-size:12px; line-height:1.9; margin-top:22px; }
 .firstform-lab .ff-view.ff-transition { animation:ff-page-enter 240ms ease both; }
 @keyframes ff-page-enter { from { transform:translateY(6px); opacity:.55; } to { transform:translateY(0); opacity:1; } }
@@ -189,11 +166,4 @@
  .firstform-lab .ff-start-outcomes { border-left:0; border-top:1px solid var(--ff-line); padding:20px 0 0; }
  .firstform-lab .ff-start-outcomes ol { display:flex; flex-wrap:wrap; gap:10px 20px; margin-top:12px; }
  .firstform-lab .ff-start-outcomes li { margin:0; font-size:12px; gap:7px; }
- .firstform-lab .ff-knowledge { margin-top:34px; }
- .firstform-lab .ff-knowledge-heading>span { display:none; }
- .firstform-lab .ff-branch-status { gap:8px; }
- .firstform-lab .ff-branch-toggle { gap:12px; }
- .firstform-lab .ff-branch-toggle strong { font-size:15px; }
- .firstform-lab .ff-leaves { padding-left:10px; }
- .firstform-lab .ff-leaf { padding:12px; align-items:flex-start; }
 }
