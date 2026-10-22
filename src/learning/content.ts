@@ -115,11 +115,25 @@ export const learningDomains: readonly LearningDomain[] = [
   },
 ]
 
-export const learningArticles = [{
+export type LearningArticle = {
+  id: string
+  domainId: DomainId
+  branchId: string
+  title: string
+  description: string
+  prerequisite: string
+  outcomes: readonly string[]
+  takeaway: string
+}
+
+export const learningArticles: readonly LearningArticle[] = [{
   id: 'comfortable-page', domainId: 'frontend', branchId: 'page-design',
   title: '一个页面为什么看起来舒服',
-  description: '从信息层级与留白开始，观察、调整并理解一个好界面怎样成立。',
-}] as const
+  description: '一起改造初构的学习入口，理解重点、分组与阅读顺序。',
+  prerequisite: '会浏览网页即可，代码阅读是可选的延伸。',
+  outcomes: ['看见重点', '理解内容的分组', '找到清楚的下一步'],
+  takeaway: '先明确任务，再安排重点与分组，最后换一种条件验证。',
+}]
 
 export function findDomain(id: string) { return learningDomains.find(domain => domain.id === id) }
 export function findArticle(domainId: string, articleId: string) {

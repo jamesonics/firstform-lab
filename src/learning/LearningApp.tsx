@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { ArrowRight, ArrowUpRight, ChevronRight, Moon, Sun } from 'lucide-react'
+import { useEffect, useLayoutEffect, useRef, useState, type ComponentType } from 'react'
+import { ArrowDown, ArrowRight, ArrowUpRight, ChevronRight, Moon, Sun } from 'lucide-react'
 import { BRAND_NAME, BRAND_ENGLISH_NAME, BRAND_FULL_NAME, BRAND_TAGLINE } from '@/lib/branding'
 import { applyAppearance } from '@/lib/appearance'
 import { BrandMark } from '@/components/brand'
@@ -9,8 +9,12 @@ import { DomainArt } from './DomainArt'
 import { LearningLink, type Navigate } from './Link'
 import ComfortablePage from './ComfortablePage'
 import './learning.css'
+import './tutorial.css'
 
 const treeStorageKey = 'firstform.knowledge-tree.v1'
+const articleViews: Record<string, ComponentType<{ navigate: Navigate }>> = {
+  'comfortable-page': ComfortablePage,
+}
 
 function readTreePreferences() {
   try { return restoreExpandedBranches(localStorage.getItem(treeStorageKey)) }
@@ -30,17 +34,33 @@ function Home({ navigate }: { navigate: Navigate }) {
 }
 
 function KnowledgeTree({ domain, expanded, toggleBranch, navigate }: { domain: LearningDomain; expanded: string[]; toggleBranch: (id: string) => void; navigate: Navigate }) {
-  const firstArticle = domain.branches.flatMap(branch => branch.nodes).find(node => node.articleId)
+  const publishedNodes = domain.branches.flatMap(branch => branch.nodes).filter(node => node.articleId)
+  const firstArticle = publishedNodes[0]?.articleId ? findArticle(domain.id, publishedNodes[0].articleId) : undefined
   return <>
     <nav className="ff-breadcrumb" aria-label="当前位置"><LearningLink href="/" navigate={navigate} restoreScroll>学习领域</LearningLink><span aria-hidden="true">/</span><span aria-current="page">{domain.title}</span></nav>
-    <header className="ff-tree-intro"><p className="ff-kicker">KNOWLEDGE TREE</p><h1 className="ff-title">{domain.title}</h1><p className="ff-description">{domain.description}</p></header>
-    <div className={'ff-tree-layout' + (!firstArticle ? ' ff-tree-layout-single' : '')}>
-      <div><div className="ff-tree-list">
+    <header className="ff-tree-intro"><p className="ff-kicker">学习领域 · {publishedNodes.length ? `${publishedNodes.length} 篇可读` : '内容规划中'}</p><h1 className="ff-title">{domain.title}</h1><p className="ff-description">{domain.description}</p></header>
+    {firstArticle && <section className="ff-start-card" aria-labelledby="learning-start-title">
+      <div className="ff-start-copy">
+        <p className="ff-kicker">第一次来，从这里开始</p>
+        <h2 id="learning-start-title">{firstArticle.title}</h2>
+        <p className="ff-description">{firstArticle.description}</p>
+        <p className="ff-start-prerequisite">{firstArticle.prerequisite}</p>
+        <div className="ff-start-actions">
+          <LearningLink className="ff-primary" href={articleHref(domain.id, firstArticle.id)} navigate={navigate}>开始学习 <ArrowRight size={16} aria-hidden="true" /></LearningLink>
+          <LearningLink className="ff-text-button" href={domainHref(domain.id) + '#knowledge-tree'} navigate={navigate}>浏览完整知识树 <ArrowDown size={14} aria-hidden="true" /></LearningLink>
+        </div>
+      </div>
+      <div className="ff-start-outcomes"><p className="ff-kicker">通过讲解和实验，学会</p><ol>{firstArticle.outcomes.map((outcome, index) => <li key={outcome}><span aria-hidden="true">0{index + 1}</span>{outcome}</li>)}</ol></div>
+    </section>}
+    <section className="ff-knowledge" id="knowledge-tree" tabIndex={-1} aria-labelledby="knowledge-tree-title">
+      <header className="ff-knowledge-heading"><div><h2 id="knowledge-tree-title">完整知识树</h2><p>{firstArticle ? '想找某个主题？在这里按分类浏览。' : '这里是这一领域的学习规划，教程会随实践逐步补充。'}</p></div><span>{domain.branches.length} 个主题分类</span></header>
+      <div className="ff-tree-list">
         {domain.branches.map(branch => {
           const open = expanded.includes(branch.id)
           const id = 'learning-branch-' + domain.id + '-' + branch.id
+          const ready = branch.nodes.filter(node => node.articleId).length
           return <section className="ff-branch" data-open={open} key={branch.id}>
-            <h2><button type="button" className="ff-branch-toggle" aria-expanded={open} aria-controls={id} onClick={() => toggleBranch(branch.id)}><span><strong>{branch.title}</strong><small>{branch.description}</small></span><ChevronRight className="ff-chevron" size={18} aria-hidden="true" /></button></h2>
+            <h3><button type="button" className="ff-branch-toggle" aria-expanded={open} aria-controls={id} onClick={() => toggleBranch(branch.id)}><span><strong>{branch.title}</strong><small>{branch.description}</small></span><span className="ff-branch-status"><span>{ready ? `${ready} 篇可读` : `${branch.nodes.length} 篇规划`}</span><ChevronRight className="ff-chevron" size={17} aria-hidden="true" /></span></button></h3>
             <div className="ff-branch-body" id={id} inert={!open} aria-hidden={!open}><div className="ff-branch-inner"><div className="ff-leaves">
               {branch.nodes.map(node => node.articleId
                 ? <LearningLink className="ff-leaf" data-ready="true" href={articleHref(domain.id, node.articleId)} navigate={navigate} key={node.id}><span>{node.title}</span><small>阅读 <ArrowRight size={12} aria-hidden="true" /></small></LearningLink>
@@ -48,16 +68,18 @@ function KnowledgeTree({ domain, expanded, toggleBranch, navigate }: { domain: L
             </div></div></div>
           </section>
         })}
-      </div><p className="ff-planning">{firstArticle ? '内容随学习逐步补充。你可以从一个具体问题开始。' : '这是这一领域的内容规划，教程会随实际学习逐步补充。'}</p></div>
-      {firstArticle?.articleId && <aside className="ff-tree-feature"><span className="ff-kicker">从一个问题开始</span><DomainArt domain={domain.id} /><h2>{firstArticle.title}</h2><p>先看见重点，再读懂细节。<br />从你每天看到的界面，开始理解设计。</p><LearningLink className="ff-primary" href={articleHref(domain.id, firstArticle.articleId)} navigate={navigate}>开始阅读 <ArrowRight size={15} aria-hidden="true" /></LearningLink></aside>}
-    </div>
+      </div><p className="ff-planning">标为“规划中”的主题尚未发布。每完成一次学习与验证，这棵树就生长一点。</p>
+    </section>
   </>
 }
 
 export default function LearningApp() {
   const [path, setPath] = useState(() => canonicalLearningPath(location.pathname))
   const pathRef = useRef(path)
+  const locationRef = useRef(path + location.search + location.hash)
+  const [navigationId, setNavigationId] = useState(0)
   const scrollPositions = useRef(new Map<string, number>())
+  const entryScrollPositions = useRef(new Map<string, number>())
   const pendingScroll = useRef({ top: 0, focus: false, anchor: location.hash.slice(1) })
   const main = useRef<HTMLElement>(null)
   const about = useRef<HTMLDetailsElement>(null)
@@ -65,6 +87,7 @@ export default function LearningApp() {
   const [expanded, setExpanded] = useState(readTreePreferences)
   const [hasNavigated, setHasNavigated] = useState(false)
   const route = readLearningRoute(path)
+  const ArticleView = route.kind === 'article' ? articleViews[route.articleId] : undefined
 
   useEffect(() => {
     document.documentElement.lang = 'zh-CN'
@@ -74,11 +97,14 @@ export default function LearningApp() {
     if (canonical !== location.pathname) history.replaceState(history.state, '', canonical === '/' ? '/' : canonical + location.search + location.hash)
     const onHistory = () => {
       const next = canonicalLearningPath(location.pathname)
-      if (next === pathRef.current) return
+      const nextLocation = next + location.search + location.hash
       scrollPositions.current.set(pathRef.current, window.scrollY)
-      if (next !== location.pathname) history.replaceState(history.state, '', next)
-      pendingScroll.current = { top: scrollPositions.current.get(next) ?? 0, focus: true, anchor: location.hash.slice(1) }
-      pathRef.current = next; setPath(next); setHasNavigated(true)
+      entryScrollPositions.current.set(locationRef.current, window.scrollY)
+      if (next !== location.pathname) history.replaceState(history.state, '', nextLocation)
+      const saved = entryScrollPositions.current.get(nextLocation)
+      pendingScroll.current = { top: saved ?? 0, focus: next !== pathRef.current, anchor: saved === undefined ? location.hash.slice(1) : '' }
+      pathRef.current = next; locationRef.current = nextLocation
+      setPath(next); setNavigationId(value => value + 1); setHasNavigated(true)
     }
     const closeAbout = (event: PointerEvent) => { if (about.current && !about.current.contains(event.target as Node)) about.current.open = false }
     addEventListener('popstate', onHistory)
@@ -95,11 +121,14 @@ export default function LearningApp() {
   useLayoutEffect(() => {
     const pending = pendingScroll.current
     const target = pending.anchor ? document.getElementById(pending.anchor) : null
-    if (target) target.scrollIntoView({ behavior: 'instant' })
+    if (target) {
+      target.scrollIntoView({ behavior: 'instant' })
+      target.focus({ preventScroll: true })
+    }
     else window.scrollTo({ top: pending.top, behavior: 'instant' })
-    if (pending.focus) main.current?.focus({ preventScroll: true })
+    if (pending.focus && !target) main.current?.focus({ preventScroll: true })
     if (about.current) about.current.open = false
-  }, [path])
+  }, [path, navigationId])
 
   useEffect(() => {
     const current = readLearningRoute(path)
@@ -113,16 +142,18 @@ export default function LearningApp() {
   const navigate: Navigate = (href, restoreScroll = false) => {
     const url = new URL(href, location.href)
     const next = canonicalLearningPath(url.pathname)
+    const nextLocation = next + url.search + url.hash
     scrollPositions.current.set(pathRef.current, window.scrollY)
-    pendingScroll.current = { top: restoreScroll ? scrollPositions.current.get(next) ?? 0 : 0, focus: true, anchor: url.hash.slice(1) }
-    if (next === pathRef.current) { window.scrollTo({ top: pendingScroll.current.top, behavior: 'instant' }); main.current?.focus({ preventScroll: true }); return }
-    history.pushState(history.state, '', next + url.search + url.hash)
-    pathRef.current = next; setPath(next); setHasNavigated(true)
+    entryScrollPositions.current.set(locationRef.current, window.scrollY)
+    pendingScroll.current = { top: restoreScroll ? scrollPositions.current.get(next) ?? 0 : 0, focus: next !== pathRef.current, anchor: url.hash.slice(1) }
+    if (nextLocation !== locationRef.current) history.pushState(history.state, '', nextLocation)
+    pathRef.current = next; locationRef.current = nextLocation
+    setPath(next); setNavigationId(value => value + 1); setHasNavigated(true)
   }
   const toggleBranch = (domainId: DomainId, branchId: string) => setExpanded(previous => ({ ...previous, [domainId]: previous[domainId].includes(branchId) ? previous[domainId].filter(id => id !== branchId) : [...previous[domainId], branchId] }))
 
   return <div className="firstform-lab">
-    <a className="ff-skip-link" href="#learning-main" onClick={() => main.current?.focus()}>跳转至主要内容</a>
+    <LearningLink className="ff-skip-link" href={path + '#learning-main'} navigate={navigate} onClick={() => main.current?.focus()}>跳转至主要内容</LearningLink>
     <div className="ff-container">
       <header className="ff-header">
         <LearningLink className="ff-brand" href="/" navigate={navigate} restoreScroll aria-label="初构首页"><BrandMark className="ff-mark" /><span className="ff-brand-name">{BRAND_NAME}<small>{BRAND_ENGLISH_NAME}</small></span></LearningLink>
@@ -135,7 +166,7 @@ export default function LearningApp() {
         <div className={'ff-view' + (hasNavigated ? ' ff-transition' : '')} key={path}>
           {route.kind === 'home' || route.kind === 'legacy' ? <Home navigate={navigate} /> : route.kind === 'domain'
             ? <KnowledgeTree domain={findDomain(route.domainId)!} expanded={expanded[route.domainId]} toggleBranch={id => toggleBranch(route.domainId, id)} navigate={navigate} />
-            : route.kind === 'article' ? <ComfortablePage navigate={navigate} />
+            : route.kind === 'article' && ArticleView ? <ArticleView navigate={navigate} />
               : <section className="ff-not-found"><p className="ff-kicker">404</p><h1 className="ff-title">未找到这个页面</h1><p className="ff-description">可以回到学习领域，沿着知识树继续探索。</p><LearningLink href="/" navigate={navigate} className="ff-primary">回到学习领域 <ArrowRight size={15} aria-hidden="true" /></LearningLink></section>}
         </div>
       </main>
