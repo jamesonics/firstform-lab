@@ -11,8 +11,10 @@
 | 首页 | `/` | 前端、后端、数据、部署、Agent 协作五个领域入口 |
 | 领域知识树 | `/learn/frontend` 等 | 先给出首篇学习入口，再沿主干逐枝展开主题与知识点 |
 | 首篇教程 | `/learn/frontend/comfortable-page` | 六步讲解、布局对比、三个参数实验、迁移练习与自检 |
+| 工程学习路线 | `/learn/engineering` | 四阶段、十个主干的学习顺序，配前置知识、实验与官方资料 |
+| CI/CD 实战案例 | `/learn/engineering/firstform-cicd` | 真实发布记录、运行与流程图、门禁实验及理解自检 |
 
-其他领域路径为 `/learn/backend`、`/learn/data`、`/learn/engineering`、`/learn/agents`。首版只发布第一篇教程，其他节点标记为“规划中”，不生成虚假的文章链接。
+其他领域路径为 `/learn/backend`、`/learn/data`、`/learn/agents`。尚未写成教程的节点标记为“规划中”，不生成虚假的文章链接。
 
 页面使用真实 URL。直接访问、刷新、浏览器前进后退均保留路由语义。知识树展开状态保存在浏览器的 `firstform.knowledge-tree.v1`；保存失败时仍可正常使用。文章返回知识树时恢复已展开章节和本次访问中的滚动位置。
 
@@ -27,6 +29,9 @@
 | `src/learning/content.ts` | 领域、章节、文章节点及已发布文章的对应关系 |
 | `src/learning/routing.ts` | 深链接解析、规划中内容校验和旧商城地址兼容 |
 | `src/learning/ComfortablePage.tsx` | 首篇六步正文、观察提示、结论边界与延伸内容 |
+| `src/learning/engineering.ts`、`EngineeringRoadmap.tsx` | 工程领域的主干、知识点、前置关系、练习标准和资料 |
+| `src/learning/CicdCaseStudy.tsx`、`engineering.css` | CI/CD 图文案例、语义化流程图与工程页面样式 |
+| `src/learning/ReleaseExperiment.tsx`、`release-simulation.ts` | 浏览器内的门禁教学模拟，不调用真实发布 API |
 | `src/learning/TutorialLayout.tsx` | 共用教程页：导语、前置知识、单列章节、折叠目录与结尾 |
 | `src/learning/Experiment.tsx` | 共用实验容器、还原操作、选项组与带数值的滑杆 |
 | `src/learning/ComfortableExperiments.tsx` | 本篇布局对比、字号、分组间距、阅读条件与独立练习 |
@@ -36,6 +41,10 @@
 | `src/lib/branding.ts`、`emails/brand.ts` | 页面和系统邮件的展示品牌 |
 
 内容当前随代码发布，没有新增 CMS、在线编辑接口或数据库表。后续需要学习内容管理时，再围绕明确需求设计数据模型。已部署的 Workers、D1、管理员身份与邮件配置继续复用。
+
+工程领域的调研依据、主干关系与逐步发布标准见 `docs/engineering-learning-roadmap.md`。首篇案例以 2026-10-23 的真实发布为历史快照，不展示为实时生产状态；未来主题只有完成内容和验证后才添加文章入口。
+
+2026-10-23 的用户阅读反馈：CI/CD 案例初稿的阅读逻辑、图文表达与视觉完成度尚未达到要求，目前作为占位草稿保留。已在上述学习框架文档中记录问题；当前优先教会用户，理解与讨论清楚后再逐次补内容，整体呈现留待后续统一改进。
 
 ## Logo 资源与维护
 

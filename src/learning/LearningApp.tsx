@@ -8,13 +8,17 @@ import { canonicalLearningPath, readLearningRoute } from './routing'
 import { DomainArt } from './DomainArt'
 import { LearningLink, type Navigate } from './Link'
 import ComfortablePage from './ComfortablePage'
+import CicdCaseStudy from './CicdCaseStudy'
+import EngineeringRoadmap from './EngineeringRoadmap'
 import KnowledgeTree from './KnowledgeTree'
 import './learning.css'
 import './tutorial.css'
+import './engineering.css'
 
 const treeStorageKey = 'firstform.knowledge-tree.v1'
 const articleViews: Record<string, ComponentType<{ navigate: Navigate }>> = {
   'comfortable-page': ComfortablePage,
+  'firstform-cicd': CicdCaseStudy,
 }
 
 function readTreePreferences() {
@@ -50,6 +54,7 @@ function DomainPage({ domain, expanded, onExpandedChange, navigate }: { domain: 
       </div>
       <div className="ff-start-art"><DomainArt domain={domain.id} /></div>
     </section>}
+    {domain.id === 'engineering' && <EngineeringRoadmap />}
     <KnowledgeTree domain={domain} expanded={expanded} onExpandedChange={onExpandedChange} navigate={navigate} />
   </>
 }

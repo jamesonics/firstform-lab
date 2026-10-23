@@ -1,3 +1,5 @@
+import { engineeringBranches } from './engineering.ts'
+
 export type DomainId = 'frontend' | 'backend' | 'data' | 'engineering' | 'agents'
 
 export type LearningNode = {
@@ -84,19 +86,8 @@ export const learningDomains: readonly LearningDomain[] = [
   },
   {
     id: 'engineering', title: '部署与工程', summary: '把本地的想法，带到线上。',
-    description: '从本地运行到线上交付，理解每个环节为什么存在。', topics: '测试 · CI · 发布',
-    branches: [
-      { id: 'verification', title: '代码与验证', description: '给每次改动留下可核对的证据', nodes: [
-        { id: 'git-and-tests', title: 'Git、测试和提交的关系', description: '把修改、验证与版本记录串成一次完整交付。' },
-      ] },
-      { id: 'delivery', title: '持续集成与交付', description: '让检查与发布形成可靠流程', nodes: [
-        { id: 'appropriate-ci', title: '怎样为项目选择合适的 CI/CD', description: '从项目需要出发，选择值得自动执行的检查。' },
-      ] },
-      { id: 'cloudflare', title: 'Cloudflare 与运维', description: '理解请求如何到达网站', nodes: [
-        { id: 'dns-https-workers', title: 'DNS、HTTPS 与 Workers', description: '沿着访问路径，理解域名、加密连接与服务入口。' },
-        { id: 'release-and-rollback', title: '一次发布和回滚的全过程', description: '把发布、验证和恢复上一个版本连起来练习。' },
-      ] },
-    ],
+    description: '从程序怎样运行，到变更怎样上线，再到服务怎样持续可靠。', topics: '运行 · 交付 · 运维',
+    branches: engineeringBranches,
   },
   {
     id: 'agents', title: '与 Agent 协作', summary: '把需求讲清，把结果看懂。',
@@ -134,6 +125,13 @@ export const learningArticles: readonly LearningArticle[] = [{
   prerequisite: '会浏览网页即可，代码阅读是可选的延伸。',
   outcomes: ['看见重点', '理解内容的分组', '找到清楚的下一步'],
   takeaway: '先明确任务，再安排重点与分组，最后换一种条件验证。',
+}, {
+  id: 'firstform-cicd', domainId: 'engineering', branchId: 'delivery',
+  title: '初构的一次修改，怎样走到线上',
+  description: '跟着一次真实发布，理解自动检查、两道门禁与上线验证。',
+  prerequisite: '从提交、分支和 PR 开始；不需要云账户，也可以完成文中的流程实验。',
+  outcomes: ['区分检查与门禁', '追踪同一个发布版本', '判断失败后在哪里继续'],
+  takeaway: '能解释每一关在验证什么、凭什么放行、失败后怎样恢复，才算理解了一次交付。',
 }]
 
 export function findDomain(id: string) { return learningDomains.find(domain => domain.id === id) }

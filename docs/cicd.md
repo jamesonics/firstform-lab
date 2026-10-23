@@ -1,6 +1,6 @@
 # CI/CD 运维
 
-更新：2026-10-23。本文件记录实际配置和操作；学习教程在完成实操与讨论后另行整理。
+更新：2026-10-23。本文件记录实际配置和操作；公开学习案例为 `/learn/engineering/firstform-cicd`，领域学习框架见 `docs/engineering-learning-roadmap.md`。案例中的运行链接是历史验证记录，不代表实时生产状态。
 
 ## 三处配置
 
