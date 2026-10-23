@@ -1,12 +1,11 @@
 import { useId, type ReactNode } from 'react'
-import { RotateCcw } from 'lucide-react'
 
 export function Experiment({ title, children, onReset, caption }: { title: string; children: ReactNode; onReset: () => void; caption: string }) {
   const id = useId()
   return <figure className="ff-lab" aria-labelledby={id}>
     <figcaption className="ff-lab-heading" id={id}>
       <span>{title}</span>
-      <button type="button" className="ff-reset" onClick={onReset}><RotateCcw size={13} aria-hidden="true" />还原参数</button>
+      <button type="button" className="ff-reset" onClick={onReset}>还原参数</button>
     </figcaption>
     {children}
     <p className="ff-lab-caption">{caption}</p>

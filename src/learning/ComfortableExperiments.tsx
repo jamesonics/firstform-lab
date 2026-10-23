@@ -13,7 +13,7 @@ function CourseCard({ titleSize = 24, innerGap = 8, groupGap = 24, lineHeight = 
     '--demo-line-height': lineHeight,
   } as CSSProperties
   return <div className="ff-course-demo" data-narrow={narrow} style={style} role="group" aria-label="排版示例">
-    <span className="ff-demo-category">{practice ? '部署与工程' : '前端与交互'} · 从这里开始</span>
+    <span className="ff-demo-category">{practice ? '部署与工程' : '前端与交互'}</span>
     <div className="ff-demo-copy">
       <h3>{practice
         ? (longTitle ? '把第一个网站发布上线，并验证它在另一台设备上也能访问' : '把第一个网站发布上线')
@@ -31,12 +31,11 @@ export function PageComparison() {
     {findDomain('frontend')!.branches.map(branch => <div key={branch.id}>{branch.title}</div>)}
   </div>
   const course = <div className="ff-case-course">
-    <span className="ff-case-label">从一个问题开始</span>
     <strong>一个页面为什么看起来舒服</strong>
     <p>观察重点与留白，亲手改善一个学习入口。</p>
     <span className="ff-demo-action">开始学习 <ArrowRight size={13} aria-hidden="true" /></span>
   </div>
-  return <Experiment title="观察实验 · 同样的内容，两种组织" onReset={() => setVersion('a')} caption="这是领域页的结构示意。示例中的“开始学习”仅用于观察，不会跳转。">
+  return <Experiment title="同样的内容，两种组织" onReset={() => setVersion('a')} caption="领域页的结构示意；“开始学习”仅用于观察，不会跳转。">
     <div className="ff-lab-controls"><ChoiceGroup label="切换布局" value={version} onChange={setVersion} options={[{ value: 'a', label: '版本 A' }, { value: 'b', label: '版本 B' }]} /></div>
     <div className="ff-lab-stage">
       <div className="ff-case" data-version={version}>
@@ -49,7 +48,7 @@ export function PageComparison() {
 
 export function HierarchyExperiment() {
   const [size, setSize] = useState(16)
-  return <Experiment title="实验一 · 只改变标题字号" onReset={() => setSize(16)} caption="范围 16–32px 用于对比。本例的正文固定为 14px；字号比例需要结合真实内容判断。">
+  return <Experiment title="只改变标题字号" onReset={() => setSize(16)} caption="标题可调为 16–32px，正文固定为 17px。比较字号时，也留意文字是否换行。">
     <div className="ff-lab-stage"><CourseCard titleSize={size} /></div>
     <div className="ff-lab-controls"><RangeControl label="标题字号" value={size} min={16} max={32} onChange={setSize} /></div>
   </Experiment>
@@ -58,7 +57,7 @@ export function HierarchyExperiment() {
 export function SpacingExperiment() {
   const [inner, setInner] = useState(12)
   const [outer, setOuter] = useState(12)
-  return <Experiment title="实验二 · 让距离表达分组" onReset={() => { setInner(12); setOuter(12) }} caption="组内间距连接标题和说明；组间间距隔开分类、内容与操作。卡片四周的留白固定为 24px。">
+  return <Experiment title="让距离表达分组" onReset={() => { setInner(12); setOuter(12) }} caption="组内间距连接标题和说明；组间间距隔开分类、内容与操作。四周留白固定为 24px。">
     <div className="ff-lab-stage"><CourseCard innerGap={inner} groupGap={outer} /></div>
     <div className="ff-lab-controls ff-two-controls">
       <RangeControl label="标题与说明的距离" value={inner} min={4} max={24} onChange={setInner} />
@@ -71,7 +70,7 @@ export function ReadingExperiment() {
   const [width, setWidth] = useState<'regular' | 'narrow'>('regular')
   const [long, setLong] = useState(false)
   const [leading, setLeading] = useState(1.8)
-  return <Experiment title="实验三 · 换一种阅读条件" onReset={() => { setWidth('regular'); setLong(false); setLeading(1.8) }} caption="常规容器最多 440px，窄容器最多 280px；都受当前屏幕宽度限制。这里只模拟内容宽度，整页仍需在真实手机上检查。">
+  return <Experiment title="换一种阅读条件" onReset={() => { setWidth('regular'); setLong(false); setLeading(1.8) }} caption="常规容器最多 440px，窄容器最多 280px，均受屏幕宽度限制。整页仍需在手机上检查。">
     <div className="ff-lab-controls">
       <ChoiceGroup label="内容容器" value={width} onChange={setWidth} options={[{ value: 'regular', label: '常规宽度' }, { value: 'narrow', label: '窄一些' }]} />
       <label className="ff-check-control"><input type="checkbox" checked={long} onChange={event => setLong(event.target.checked)} />换成长标题</label>
@@ -98,7 +97,7 @@ export function TransferPractice() {
       <textarea value={reason} onChange={event => setReason(event.target.value)} rows={3} placeholder="我希望访客先看见……因为他现在需要……" />
       <small>这是本次练习的临时笔记，离开或刷新页面后会清空。</small>
     </label>
-    <Experiment title="独立练习 · 改善一个新的学习入口" onReset={() => { setSize(16); setGap(12); setStress(false) }} caption="使用同样的方法处理另一组内容。没有唯一正确的数值，关键是解释取舍并验证。还原参数会保留上面的笔记。">
+    <Experiment title="改善一个新的学习入口" onReset={() => { setSize(16); setGap(12); setStress(false) }} caption="没有唯一正确的数值，请解释取舍并验证。还原参数会保留笔记。">
       <div className="ff-lab-stage"><CourseCard practice titleSize={size} groupGap={gap} narrow={stress} longTitle={stress} /></div>
       <div className="ff-lab-controls ff-two-controls">
         <RangeControl label="练习：标题字号" value={size} min={16} max={32} onChange={setSize} />
