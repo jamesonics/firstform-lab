@@ -16,9 +16,9 @@
     "security:scan": "python3 scripts/scan-public-source.py",
     "worker:migrate:local": "wrangler d1 migrations apply INTEREST_DB --local",
     "worker:check": "node scripts/check-worker-deploy.mjs",
-    "worker:dry-run": "npm run build && wrangler deploy --dry-run --config wrangler.production.example.jsonc",
+    "worker:dry-run": "npm run build && wrangler deploy --dry-run --outdir .wrangler/release --config wrangler.production.example.jsonc",
     "worker:migrate:production": "npm run worker:check && wrangler d1 migrations apply INTEREST_DB --remote --config wrangler.production.jsonc",
-    "worker:deploy": "npm run worker:check -- --remote && npm run build && wrangler deploy --config wrangler.production.jsonc"
+    "worker:deploy": "gh workflow run verify.yml --ref main"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

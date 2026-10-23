@@ -1,13 +1,21 @@
-name: Verify public source
-on: [push, pull_request, workflow_dispatch]
+name: Verify and release
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   source:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
           cache: npm
@@ -16,6 +24,7 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run worker:dry-run
+      - run: node scripts/production-release.mjs create
       - name: Verify D1 migrations on a fresh local database
         run: npx wrangler d1 migrations apply INTEREST_DB --local --persist-to "$RUNNER_TEMP/worker-d1"
       - name: Scan for credentials
@@ -34,8 +43,20 @@ jobs:
           mkdir -p "$RUNNER_TEMP/public-source"
           git archive HEAD | tar -x -C "$RUNNER_TEMP/public-source"
           "$RUNNER_TEMP/gitleaks/gitleaks" dir "$RUNNER_TEMP/public-source" --config .gitleaks.toml --redact
+      - name: Save the verified release
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-${{ github.sha }}
+          path: |
+            dist/
+            .wrangler/release/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
   backend:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:18
@@ -48,12 +69,14 @@ jobs:
           --health-cmd "pg_isready -U public_test -d storefront_test"
           --health-interval 5s --health-timeout 5s --health-retries 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
       - run: npm ci
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: services/storefront/go.mod
           cache-dependency-path: services/storefront/go.sum
@@ -63,3 +86,80 @@ jobs:
         working-directory: services/storefront
         env:
           STOREFRONT_TEST_DATABASE_URL: postgres://public_test@127.0.0.1:5432/storefront_test?sslmode=disable
+  production:
+    needs: [source, backend]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://jiaotonai.cc
+    concurrency:
+      group: firstform-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Reject a superseded main commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          current_main="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)"
+          test "$current_main" = "$GITHUB_SHA" || { echo 'main has changed; release its latest successful run instead.'; exit 1; }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Download this run's verified release
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release-${{ github.sha }}
+          path: .
+      - run: node scripts/production-release.mjs verify
+      - name: Prepare private production configuration
+        env:
+          WRANGLER_PRODUCTION_CONFIG: ${{ secrets.WRANGLER_PRODUCTION_CONFIG }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          import ts from 'typescript';
+          const required = ['WRANGLER_PRODUCTION_CONFIG', 'CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_API_TOKEN'];
+          const missing = required.filter(name => !process.env[name]);
+          if (missing.length) throw new Error('Missing production environment secrets: ' + missing.join(', '));
+          const value = process.env.WRANGLER_PRODUCTION_CONFIG;
+          const parsed = ts.parseConfigFileTextToJson('wrangler.production.jsonc', value);
+          if (parsed.error || !parsed.config) throw new Error('Invalid private production configuration.');
+          const config = parsed.config;
+          for (const value of [config.name, config.account_id, ...config.d1_databases.flatMap(db => [db.database_id, db.database_name])]) {
+            if (typeof value === 'string') console.log('::add-mask::' + value.replaceAll('\r', '%0D').replaceAll('\n', '%0A'));
+          }
+          writeFileSync('wrangler.production.jsonc', value, { mode: 0o600 });
+          NODE
+      - name: Verify production configuration and existing secret names
+        run: npm run worker:check -- --remote
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          WRANGLER_SEND_METRICS: 'false'
+      - name: Deploy the verified bundle without rebuilding
+        run: npx wrangler deploy .wrangler/release/index.js --no-bundle --config wrangler.production.jsonc --tag "${GITHUB_SHA:0:7}" --message "GitHub Actions $GITHUB_SHA"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          WRANGLER_SEND_METRICS: 'false'
+      - name: Verify the public site and database health
+        run: |
+          node --input-type=module <<'NODE'
+          const home = await fetch('https://jiaotonai.cc', { signal: AbortSignal.timeout(30000) });
+          if (!home.ok) throw new Error('Homepage health check failed.');
+          const health = await fetch('https://jiaotonai.cc/api/health', { signal: AbortSignal.timeout(30000) });
+          if (!health.ok || (await health.json()).ok !== true) throw new Error('Worker/D1 health check failed.');
+          console.log('Homepage and Worker/D1 health verified.');
+          NODE
+      - name: Record the released commit
+        run: |
+          printf 'Released commit: `%s`\n\nRun: %s/%s/actions/runs/%s\n\nSite: https://jiaotonai.cc\n' "$GITHUB_SHA" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" >> "$GITHUB_STEP_SUMMARY"
