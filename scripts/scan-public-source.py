@@ -21,6 +21,7 @@ PUBLIC_HOSTS = {
     'github.com', 'raw.githubusercontent.com', 'registry.npmjs.org',
     'www.w3.org', 'www.apache.org', 'ui.shadcn.com', 'transitions.dev', 'vite.dev',
     'www.duolingo.com', 'www.duolingo.cn', 'd35aaqx5ub95lt.cloudfront.net',
+    'www.postgresql.org', 'www.sqlite.org',  # Official references for the data learning roadmap.
 }
 BINARY_ASSETS = {
     'public/email-logo.png', 'public/email-shop.png', 'src/assets/hero.png',

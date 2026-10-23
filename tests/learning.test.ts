@@ -55,7 +55,7 @@ test('tree preferences preserve deliberately collapsed branches and discard remo
   const restored = restoreExpandedBranches(JSON.stringify({ frontend: [], backend: ['reliability', 'deleted', 'reliability'], invalid: ['branch'] }))
   assert.deepEqual(restored.frontend, [])
   assert.deepEqual(restored.backend, ['reliability'])
-  assert.deepEqual(restored.data, ['structure'])
+  assert.deepEqual(restored.data, ['foundations'])
   assert.deepEqual(Object.keys(restored), learningDomains.map(domain => domain.id))
 })
 

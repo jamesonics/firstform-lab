@@ -67,18 +67,71 @@ export const learningDomains: readonly LearningDomain[] = [
   },
   {
     id: 'data', title: '数据与存储', summary: '让信息有结构，也有归处。',
-    description: '从一张表开始，理解数据的结构、关系和变化。', topics: '表 · 查询 · 迁移',
+    description: '按从上到下的顺序，从数据存放、表与查询，学到事务、性能和恢复，最后认识更多存储方案。各主题正在规划中。', topics: '建模 · 查询 · 可靠性',
     branches: [
-      { id: 'structure', title: '表与关系', description: '给信息建立清楚的结构', nodes: [
+      { id: 'foundations', title: '数据在哪里', description: '从一次保存认识内存、文件、浏览器与数据库', nodes: [
+        { id: 'data-journey', title: '一条数据从输入到保存', description: '追踪数据经过的位置，区分程序中的状态与持久保存。' },
+        { id: 'files-and-values', title: '文件、JSON 与数据类型', description: '用文本、数字和空值理解数据表示、编码与序列化。' },
+        { id: 'browser-and-server-storage', title: '浏览器与服务器各存什么', description: '比较存储的位置、寿命与访问范围，理解刷新和换设备的差别。' },
+        { id: 'why-databases', title: '为什么需要数据库', description: '从查找、修改、共享和规则维护，理解数据库承担的工作。' },
+      ] },
+      { id: 'structure', title: '表与关系', description: '把需求整理成记录、字段、关系和规则', nodes: [
         { id: 'keys-and-constraints', title: '主键、字段与约束', description: '从一条记录出发，为数据定义结构与规则。' },
-        { id: 'relationships', title: '两张表如何建立关系', description: '用具体查询理解记录之间的关联。' },
+        { id: 'numbers-time-and-null', title: '数字、时间与空值怎样表示', description: '区分数值精度、时间含义和缺失信息，明确字段的存储约定。' },
+        { id: 'relationships', title: '两张表如何建立关系', description: '用关系图与记录配对理解一对多、多对多和外键。' },
+        { id: 'normalization', title: '什么时候应该拆表', description: '从重复与修改异常理解依赖、范式和保留冗余的条件。' },
+        { id: 'model-from-requirements', title: '从需求画出数据模型', description: '把要保存的信息、需要的查询和必须成立的规则放在一张图里。' },
       ] },
-      { id: 'queries', title: '查询与更新', description: '准确地读写需要的数据', nodes: [
+      { id: 'queries', title: '查询与更新', description: '用 SQL 准确读写，并核对结果的含义', nodes: [
+        { id: 'first-sql', title: '第一次用 SQL 读写数据', description: '在独立练习库中创建表、增加记录、查询、修改和删除。' },
+        { id: 'filter-sort-and-page', title: '筛选、排序与分页', description: '把查找条件与结果顺序写清楚，处理空值和相同排序值。' },
+        { id: 'join-cardinality', title: '关联查询为什么会多行或少行', description: '用匹配关系理解内连接、左连接、重复行和没有匹配的记录。' },
+        { id: 'aggregate-and-null', title: '分组统计与空值', description: '核对计数、汇总和筛选发生在哪一层，避免统计口径错误。' },
+        { id: 'compose-queries', title: '把复杂查询拆成几步', description: '用子查询与公共表表达式组织查询，再认识视图和窗口函数。' },
+      ] },
+      { id: 'application-data', title: '程序如何读写数据', description: '连接页面、接口和数据库，明确各层的责任', nodes: [
         { id: 'query-to-interface', title: '从查询语句到界面上的内容', description: '追踪一次数据读取怎样成为页面上的信息。' },
+        { id: 'parameters-and-validation', title: '参数化查询与输入校验', description: '区分查询结构、输入值和业务规则，观察参数绑定怎样工作。' },
+        { id: 'data-access-boundaries', title: '数据访问权限在哪里检查', description: '验证身份、记录归属与返回字段，检查不同用户能读写什么。' },
+        { id: 'database-access-tools', title: 'ORM、连接与数据库边界', description: '认识数据库驱动、对象映射和连接方式，查看工具最终执行的操作。' },
       ] },
-      { id: 'evolution', title: '迁移与恢复', description: '让结构变化可以追踪', nodes: [
+      { id: 'correctness', title: '事务与并发', description: '在中途失败、同时修改和重试时保护数据', nodes: [
+        { id: 'transaction-failure', title: '操作做到一半失败怎么办', description: '用失败实验理解事务边界、提交、回滚与必须保持的规则。' },
+        { id: 'concurrent-updates', title: '两个人同时修改一条记录', description: '按时间线复现覆盖更新，比较原子更新与版本检查。' },
+        { id: 'isolation-and-locks', title: '锁、隔离级别与多版本', description: '观察并发读写的可见性、等待和冲突，核对具体数据库的实现。' },
+        { id: 'deduplication-and-retries', title: '重复提交与失败重试', description: '面对结果未知的请求，用唯一约束和业务标识验证重复处理。' },
+      ] },
+      { id: 'storage-internals', title: '数据结构与存储原理', description: '补齐查找、树、数据页和恢复日志的基础', nodes: [
+        { id: 'search-structures', title: '查找数据有哪些办法', description: '比较顺序查找、二分查找与哈希，认识数组、链表和复杂度。' },
+        { id: 'trees-and-pages', title: '树如何减少查找次数', description: '从有序数据和分叉查找，认识平衡树、B 树与 B+ 树。' },
+        { id: 'record-layout', title: '一条记录怎样放进数据页', description: '连接逻辑记录与文件布局，认识数据页、缓存和读写开销。' },
+        { id: 'logs-and-crash-recovery', title: '数据库怎样在中断后恢复', description: '结合日志与检查点理解恢复过程，区分进程中断和断电保证。' },
+      ] },
+      { id: 'performance', title: '索引与查询性能', description: '用执行计划和测量解释快慢与优化代价', nodes: [
+        { id: 'index-tradeoffs', title: '索引为什么有收益也有代价', description: '比较读取、写入与空间开销，验证索引是否适合当前查询。' },
+        { id: 'composite-indexes', title: '联合索引的顺序怎样选择', description: '结合筛选、范围和排序，比较不同列顺序的执行计划。' },
+        { id: 'query-plans', title: '数据库怎样选择查询计划', description: '认识扫描、连接、排序与统计信息，读懂一次查询的执行方式。' },
+        { id: 'slow-query-investigation', title: '怎样定位一次慢查询', description: '沿请求检查查询次数、处理数据量与耗时，一次验证一个改动。' },
+      ] },
+      { id: 'evolution', title: '迁移与恢复', description: '让结构变化可追踪，让恢复经过实际核验', nodes: [
         { id: 'database-migrations', title: '数据库迁移解决什么问题', description: '记录结构变化，让不同环境得到一致的数据表。' },
+        { id: 'changing-existing-data', title: '有旧数据时怎样改表', description: '安排结构变更、数据回填与程序兼容，明确失败后的处理方式。' },
         { id: 'restore-a-backup', title: '备份之后怎样验证恢复', description: '用恢复演练，检查备份是否真的可用。' },
+        { id: 'recovery-objectives', title: '误删、回滚与恢复目标', description: '区分代码回滚与数据恢复，测量可接受的数据损失和恢复时间。' },
+      ] },
+      { id: 'operations', title: '数据安全与运行维护', description: '练习权限、监测、数据生命周期与故障处理', nodes: [
+        { id: 'least-privilege-and-privacy', title: '最小权限与敏感数据', description: '梳理访问能力及数据副本，检查日志、导出和备份中的信息。' },
+        { id: 'database-observability', title: '怎样发现数据库出问题', description: '把延迟、错误、资源用量和容量变化关联到具体故障。' },
+        { id: 'retention-and-deletion', title: '数据增长、归档与删除', description: '制定保留规则，核对主数据、关联记录、缓存与备份的生命周期。' },
+        { id: 'data-incident-review', title: '一次数据故障怎样排查和复盘', description: '在隔离环境中串起发现、定位、恢复、核验和防止复发。' },
+      ] },
+      { id: 'storage-landscape', title: '存储选型与分布式入门', description: '进阶概览：认识不同需求与系统之间的取舍', nodes: [
+        { id: 'cache-freshness', title: '缓存为什么会读到旧数据', description: '区分事实来源与副本，观察过期、失效和并发更新的影响。' },
+        { id: 'files-and-object-storage', title: '图片、附件与对象存储', description: '区分文件内容与元数据，考虑上传、引用和删除的一致性。' },
+        { id: 'documents-search-and-vectors', title: '文档、搜索与向量检索', description: '比较精确匹配、灵活结构、全文搜索与相似度检索的需求。' },
+        { id: 'replication-and-sharding', title: '复制、分片与一致性', description: '用副本延迟与网络故障认识读写一致性、可用性和扩容边界。' },
+        { id: 'transactional-and-analytical-data', title: '业务查询与数据分析', description: '区分日常读写和大量统计，认识数据管道、行列存储与质量检查。' },
+        { id: 'choose-storage', title: '怎样为一个需求选择存储', description: '根据数据模型、查询、正确性、规模和维护成本提出可验证的选择。' },
       ] },
     ],
   },
