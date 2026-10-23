@@ -1,10 +1,10 @@
 import { DuoMark, GeminiMark } from './membership-scene'
 import { Mail } from 'lucide-react'
+import { BRAND_LOGO } from '@/lib/branding'
+import './brand.css'
 
 export function BrandMark({ className = '' }: { className?: string }) {
-  return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" className={className}>
-    <text x="9" y="26" fontFamily="Georgia,serif" fontStyle="italic" fontSize="30" fill="currentColor">f</text>
-  </svg>
+  return <img src={BRAND_LOGO} alt="" aria-hidden="true" width={32} height={32} className={`brand-mark ${className}`.trim()} />
 }
 export function ProductMark({ small = false, productId = 'chatgpt' }: { small?: boolean; productId?: string }) {
   return <div className={`product-mark mark-${productId} ${small ? 'small' : ''}`} aria-hidden="true"><ProductLogo productId={productId} /></div>

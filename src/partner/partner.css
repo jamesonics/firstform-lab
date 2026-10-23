@@ -378,7 +378,7 @@
 .partner-login-back:hover { color:var(--foreground); }
 .partner-login-panel { width:100%; max-width:400px; }
 .partner-login-brand { display:inline-flex; align-items:center; gap:10px; color:var(--foreground); text-decoration:none; margin-bottom:40px; }
-.partner-login-brand>svg { width:28px; height:28px; }
+.partner-login-brand>.brand-mark { width:28px; height:28px; }
 .partner-login-brand strong { font-size:22px; letter-spacing:-.6px; font-weight:650; }
 .partner-login-brand strong span { font-weight:450; }
 .partner-login-heading { margin-bottom:30px; }

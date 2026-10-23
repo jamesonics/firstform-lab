@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ArrowRight, ArrowUpRight, ChevronRight, Moon, Sun } from 'lucide-react'
 import { BRAND_NAME, BRAND_ENGLISH_NAME, BRAND_FULL_NAME, BRAND_TAGLINE } from '@/lib/branding'
 import { applyAppearance } from '@/lib/appearance'
+import { BrandMark } from '@/components/brand'
 import { articleHref, domainHref, findArticle, findDomain, learningDomains, restoreExpandedBranches, type DomainId, type LearningDomain } from './content'
 import { canonicalLearningPath, readLearningRoute } from './routing'
 import { DomainArt } from './DomainArt'
@@ -124,7 +125,7 @@ export default function LearningApp() {
     <a className="ff-skip-link" href="#learning-main" onClick={() => main.current?.focus()}>跳转至主要内容</a>
     <div className="ff-container">
       <header className="ff-header">
-        <LearningLink className="ff-brand" href="/" navigate={navigate} restoreScroll aria-label="初构首页"><span className="ff-mark" aria-hidden="true">f</span><span className="ff-brand-name">{BRAND_NAME}<small>{BRAND_ENGLISH_NAME}</small></span></LearningLink>
+        <LearningLink className="ff-brand" href="/" navigate={navigate} restoreScroll aria-label="初构首页"><BrandMark className="ff-mark" /><span className="ff-brand-name">{BRAND_NAME}<small>{BRAND_ENGLISH_NAME}</small></span></LearningLink>
         <nav className="ff-nav" aria-label="主导航"><LearningLink className="ff-text-button" href="/" navigate={navigate} restoreScroll aria-current={route.kind === 'home' ? 'page' : undefined}>学习领域</LearningLink>
           <button type="button" className="ff-theme-button" aria-label={dark ? '切换亮色外观' : '切换深色外观'} aria-pressed={dark} onClick={() => setDark(value => !value)}>{dark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}</button>
           <details className="ff-about" ref={about} onKeyDown={event => { if (event.key === 'Escape') { event.currentTarget.open = false; event.currentTarget.querySelector('summary')?.focus() } }}><summary>关于初构</summary><p>在建设这个网站的过程中，理解设计、代码与工程，再把经验整理成可以探索、实践和复用的方法。</p></details>

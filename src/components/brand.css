@@ -1,0 +1,11 @@
+.brand-mark {
+  display:block;
+  width:32px;
+  height:32px;
+  flex:none;
+  object-fit:contain;
+  border-radius:28%;
+}
+
+/* Keep the approved charcoal pixels unchanged in every workspace. */
+.dark .brand-mark { background:#f4f5f7; }
