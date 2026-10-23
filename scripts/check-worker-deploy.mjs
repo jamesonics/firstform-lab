@@ -26,6 +26,7 @@ export function validateWorkerDeployment(c) {
   if (c.observability?.enabled !== true || c.observability?.logs?.invocation_logs !== false) errors.push('enable safe application logs without automatic request logs')
   for (const name of flags) if (!['true', 'false'].includes(v[name])) errors.push(`${name} must explicitly be "true" or "false"`)
   if (v.ORDER_TESTING_ENABLED !== 'false' || v.PAYMENT_TEST_ENABLED !== 'false') errors.push('production cannot enable demo orders or payment test orders')
+  for (const name of flags.filter(name => name.endsWith('_CHECKOUT_ENABLED') || name === 'EMAIL_PRODUCTS_ENABLED')) if (v[name] !== 'false') errors.push(`${name} must remain disabled for this learning project`)
   if (v.PAYMENT_PROVIDER !== 'alipay') errors.push('the Workers payment adapter currently supports alipay only')
   const callback = httpsUrl(v.PAYMENT_NOTIFY_ORIGIN, true)
   if (!callback || callback.origin !== origin?.origin) errors.push('PAYMENT_NOTIFY_ORIGIN must match STOREFRONT_ORIGIN')
