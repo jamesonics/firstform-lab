@@ -199,6 +199,10 @@ test('deployment preflight rejects templates, missing Cron and production testin
   c.routes = [{ pattern: 'github.com', custom_domain: true }]
   assert.deepEqual(validateWorkerDeployment(c).errors, [])
   assert.ok(validateWorkerDeployment(c).secrets.includes('PARTNER_AUTH_SECRET'))
+  for (const name of Object.keys(c.vars).filter(name => name.endsWith('_CHECKOUT_ENABLED') || name === 'EMAIL_PRODUCTS_ENABLED')) {
+    c.vars[name] = 'true'; assert.ok(validateWorkerDeployment(c).errors.some(error => error.includes('must remain disabled')), name)
+    c.vars[name] = 'false'
+  }
   c.vars.PAYMENT_TEST_ENABLED = 'true'; assert.ok(validateWorkerDeployment(c).errors.length)
   c.vars.PAYMENT_TEST_ENABLED = 'false'; c.triggers.crons = []; assert.ok(validateWorkerDeployment(c).errors.length)
 })
