@@ -55,7 +55,7 @@
 .firstform-lab .ff-tree-intro { padding:24px 0 32px; }
 .firstform-lab .ff-tree-intro .ff-description { margin-top:14px; }
 .firstform-lab .ff-start-card { display:grid; grid-template-columns:minmax(0,1fr) 220px; align-items:center; gap:40px; padding:32px; border:1px solid var(--ff-card-border); border-radius:var(--ff-radius); background:var(--ff-card-background); box-shadow:var(--ff-card-shadow); }
-.firstform-lab .ff-start-copy h2 { font-size:var(--ff-font-heading); line-height:1.5; font-weight:600; margin-bottom:14px; }
+.firstform-lab .ff-start-copy h2 { font-size:var(--ff-font-heading); line-height:1.5; font-weight:600; margin-bottom:14px; text-wrap:balance; }
 .firstform-lab .ff-start-actions { margin-top:24px; }
 .firstform-lab .ff-primary { display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 22px; min-height:48px; border:1px solid light-dark(#2f63ca,#6188cd); border-radius:100px; background:linear-gradient(150deg,#497be0,#3567c9); box-shadow:0 5px 12px light-dark(#3569cf20,#00000030),inset 0 1px 0 #ffffff30; color:var(--ff-on); font-weight:500; }
 .firstform-lab .ff-primary:hover { filter:brightness(1.06); }

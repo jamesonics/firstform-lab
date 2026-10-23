@@ -19,6 +19,10 @@ PUBLIC_HOSTS = {
     'openapi.alipay.com', 'openapi-sandbox.dl.alipaydev.com', 'qr.alipay.com',
     'chatgpt.com', 'api.openai.com', 'cdn.auth0.com',
     'github.com', 'raw.githubusercontent.com', 'registry.npmjs.org',
+    # Official references used by the engineering learning roadmap and case study.
+    'developer.mozilla.org', 'docs.github.com', 'dora.dev', 'sre.google',
+    'opentelemetry.io', 'docs.docker.com', 'developer.hashicorp.com',
+    'kubernetes.io', 'slsa.dev',
     'www.w3.org', 'www.apache.org', 'ui.shadcn.com', 'transitions.dev', 'vite.dev',
     'www.duolingo.com', 'www.duolingo.cn', 'd35aaqx5ub95lt.cloudfront.net',
 }
