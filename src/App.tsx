@@ -1,5 +1,5 @@
 import { useStorefrontI18n } from '@/lib/storefront-i18n'
-import { BRAND_NAME } from '@/lib/branding'
+import { BRAND_FAVICON, BRAND_NAME } from '@/lib/branding'
 import { useEffect, useState } from 'react'
 import { ArrowRight, Check, ChevronRight, Clock3, CreditCard, FileKey2, LifeBuoy, Monitor, Moon, Search, ShieldCheck, Sparkles, Sun, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -71,7 +71,7 @@ function App() {
     document.querySelector('meta[name="description"]')?.setAttribute('content', description)
     document.title = pageTitle || (platformBrand ? translateStorefront(locale, `${BRAND_NAME} · 会员订阅与工具服务`) : brandName)
     const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
-    if (icon) { icon.href = brandLogo || (platformBrand ? '/favicon.svg' : '/brands/shop.svg'); icon.type = brandLogo ? 'image/png' : 'image/svg+xml' }
+    if (icon) { icon.href = brandLogo || (platformBrand ? BRAND_FAVICON : '/brands/shop.svg'); icon.type = brandLogo || platformBrand ? 'image/png' : 'image/svg+xml'; icon.removeAttribute('sizes') }
   }, [brandName, platformBrand, brandLogo, locale, pageTitle, description])
   const { orders } = store
   const [activeId, setActiveId] = useState<string>()

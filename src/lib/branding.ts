@@ -4,3 +4,5 @@ export const BRAND_NAME = '初构'
 export const BRAND_ENGLISH_NAME = 'Firstform Lab'
 export const BRAND_FULL_NAME = `${BRAND_NAME} · ${BRAND_ENGLISH_NAME}`
 export const BRAND_TAGLINE = '把技术做成实验，把实验整理成方法。'
+export const BRAND_LOGO = '/branding/firstform-logo-charcoal-v1.png'
+export const BRAND_FAVICON = '/branding/firstform-favicon-v1.png'

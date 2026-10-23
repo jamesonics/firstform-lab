@@ -33,7 +33,7 @@
 .firstform-lab .ff-container { max-width:1120px; padding:0 42px; margin:auto; min-width:0; }
 .firstform-lab .ff-header { display:flex; align-items:center; justify-content:space-between; gap:22px; min-height:82px; border-bottom:1px solid var(--ff-line); }
 .firstform-lab .ff-brand { display:inline-flex; align-items:center; gap:10px; border:0; background:transparent; padding:0; color:var(--ff-text); }
-.firstform-lab .ff-mark { display:grid; place-items:center; width:36px; height:39px; border-radius:11px; background:var(--ff-tint); color:var(--ff-link); font:italic 32px/1 Georgia,serif; padding:0 4px 4px 0; }
+.firstform-lab .ff-mark { width:40px; height:40px; border-radius:11px; }
 .firstform-lab .ff-brand-name { text-align:left; font-size:21px; line-height:1.25; letter-spacing:-.6px; font-weight:650; }
 .firstform-lab .ff-brand-name small { display:block; margin-top:3px; font-size:11px; letter-spacing:.7px; font-weight:400; color:var(--ff-muted); }
 .firstform-lab .ff-nav { display:flex; align-items:center; gap:25px; }

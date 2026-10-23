@@ -1,7 +1,7 @@
 .admin-shell { display:flex; min-height:100dvh; background:var(--background); font-size:13px; }
 .admin-sidebar { width:220px; flex-shrink:0; padding:30px 20px 20px; background:var(--card); border-right:1px solid var(--border); height:100dvh; position:sticky; top:0; display:flex; flex-direction:column; overflow-y:auto; }
 .admin-brand { display:flex; align-items:center; gap:10px; color:var(--foreground); text-decoration:none; }
-.admin-brand>svg { width:26px; height:26px; }
+.admin-brand>.brand-mark { width:26px; height:26px; }
 .admin-brand strong { font-size:19px; letter-spacing:-.5px; }
 .admin-brand>span { font-size:11px; color:var(--muted-foreground); margin-left:auto; }
 .admin-workspace-label { margin:34px 10px 12px; color:var(--muted-foreground); font-size:10px; letter-spacing:1px; }

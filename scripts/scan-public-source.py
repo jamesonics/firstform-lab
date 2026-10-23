@@ -22,7 +22,12 @@ PUBLIC_HOSTS = {
     'www.w3.org', 'www.apache.org', 'ui.shadcn.com', 'transitions.dev', 'vite.dev',
     'www.duolingo.com', 'www.duolingo.cn', 'd35aaqx5ub95lt.cloudfront.net',
 }
-BINARY_ASSETS = {'public/email-logo.png', 'public/email-shop.png', 'src/assets/hero.png'}
+BINARY_ASSETS = {
+    'public/email-logo.png', 'public/email-shop.png', 'src/assets/hero.png',
+    'public/branding/firstform-logo-charcoal-v1.png',
+    'public/branding/firstform-favicon-v1.png',
+    'public/branding/firstform-apple-touch-icon-v1.png',
+}
 FORBIDDEN_PARTS = {'.git', '.secrets', '.imports', '.admin-auth', '.xgift-private',
                    'node_modules', 'dist', '.preview', '.wrangler', 'artifacts', '__pycache__'}
 FORBIDDEN_SUFFIXES = {'.pem', '.key', '.p12', '.pfx', '.sqlite', '.db', '.dump',
