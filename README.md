@@ -26,7 +26,7 @@
 | 部署与工程 | `/learn/engineering` |
 | 与 Agent 协作 | `/learn/agents` |
 
-首篇教程为[一个页面为什么看起来舒服](https://jiaotonai.cc/learn/frontend/comfortable-page)。当前源码的教程样板围绕初构领域页展开六步讲解，包含布局对比、字号与间距实验、阅读条件检查和迁移练习；样板先进行本地评审。其他内容按实际学习逐步补充，当前未发布的节点标为“规划中”。
+首篇教程为[一个页面为什么看起来舒服](https://jiaotonai.cc/learn/frontend/comfortable-page)，围绕初构领域页展开六步讲解，包含布局对比、字号与间距实验、阅读条件检查和迁移练习。其他内容按实际学习逐步补充，当前未发布的节点标为“规划中”。发布通过受保护的 main 分支与 GitHub Actions 生产审批，流程见 [CI/CD 运维](docs/cicd.md)。
 
 ## 当前实现
 
